@@ -3,6 +3,9 @@ import pickle
 import gearman
 from django.conf import settings
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class PickleDataEncoder(gearman.DataEncoder):
     @classmethod
@@ -91,3 +94,7 @@ class DjangoGearmanWorker(gearman.GearmanWorker):
         """Instantiate Gearman worker with servers from settings file."""
         return super(DjangoGearmanWorker, self).__init__(
                 settings.GEARMAN_SERVERS, **kwargs)
+
+    def on_job_exception(self, current_job, exc_info):
+        logger.exception("Gearman Job Failure - %s" % current_job)
+        return super(DjangoGearmanWorker, self).on_job_exception(current_job, exc_info)
