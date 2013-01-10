@@ -96,5 +96,5 @@ class DjangoGearmanWorker(gearman.GearmanWorker):
                 settings.GEARMAN_SERVERS, **kwargs)
 
     def on_job_exception(self, current_job, exc_info):
-        logger.exception("Gearman Job Failure - %s" % current_job)
+        logger.exception("Gearman Job Failure => %s: %s - %s" % (exc_info[0].__name__, exc_info[1].message, current_job))
         return super(DjangoGearmanWorker, self).on_job_exception(current_job, exc_info)
